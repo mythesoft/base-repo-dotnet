@@ -14,22 +14,35 @@ podTemplate(
 {
 	node("build") 
     {
-        container('dotnet') 
+        stage('checkout') 
         {
-            // opt out dotnet telemetry
-            sh 'dotnet --version'
+            checkout scm
         }
 
-        container('docker') 
+        stage('Build image') 
         {
-            // opt out dotnet telemetry
-            sh 'docker --version'
+            container('dotnet') 
+            {
+                // opt out dotnet telemetry
+                sh 'dotnet --version'
+            }
         }
 
-        container('kubectl') 
+        stage('Build image') {
+            container('docker') 
+            {
+                // opt out dotnet telemetry
+                sh 'docker --version'
+            }
+        }
+
+        stage('Push image to Docker Registry')
         {
-            // opt out dotnet telemetry
-            sh 'kubectl get nodes'
+            container('kubectl') 
+            {
+                // opt out dotnet telemetry
+                sh 'kubectl get nodes'
+            }
         }
 
     }
