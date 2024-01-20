@@ -2,8 +2,7 @@ podTemplate(
 	name: 'dotnet-and-docker',
 	label: "build",
 	containers: [
-        containerTemplate(name: 'jnlp',         image: 'jenkins/jnlp-slave:latest-jdk11'),
-		containerTemplate(name: 'dotnet',       image: 'mcr.microsoft.com/dotnet/sdk:7.0',ttyEnabled: true,command: 'cat'), 
+        containerTemplate(name: 'dotnet',       image: 'mcr.microsoft.com/dotnet/sdk:7.0',ttyEnabled: true,command: 'cat'), 
 		containerTemplate(name: 'docker',       image: 'docker:stable-dind', ttyEnabled: true, command: 'cat', privileged: true),
         containerTemplate(name: 'kubectl',      image: 'lachlanevenson/k8s-kubectl', ttyEnabled: true, command: 'cat'),
     ],
