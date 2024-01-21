@@ -23,10 +23,10 @@ podTemplate(
 
         stage('Test enviroment') 
         {
-            println "In service: '${env.service}'"
+            println "In service: '${service}'"
             println "In servicePath: '${env.servicePath}'"
             println "In label: '${env.label}'"
-            println "In version: '${env.version}'"
+            println "In version: '${version}'"
         }
 
         stage('Build image') 
