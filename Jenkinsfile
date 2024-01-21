@@ -19,10 +19,17 @@ podTemplate(
             checkout scm
         }
 
-        environment {}
+        
 
         stage('Test enviroment') 
         {
+            script {
+                def props = readProperties file: '.env' 
+                env.service = props.service
+                env.servicePath = props.servicePath
+                env.label = props.label
+                env.version = props.version
+            }
             println "In service: '${service}'"
             println "In servicePath: '${env.servicePath}'"
             println "In label: '${env.label}'"
