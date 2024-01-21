@@ -19,6 +19,16 @@ podTemplate(
             checkout scm
         }
 
+        environment {}
+
+        stage('Test enviroment') 
+        {
+            println "In service: '${env.service}'"
+            println "In servicePath: '${env.servicePath}'"
+            println "In label: '${env.label}'"
+            println "In version: '${env.version}'"
+        }
+
         stage('Build image') 
         {
             container('dotnet') 
