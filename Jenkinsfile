@@ -6,13 +6,13 @@ podTemplate(
 	label: "build",
 	containers: [
         containerTemplate(name: 'dotnet',       image: 'mcr.microsoft.com/dotnet/sdk:7.0',ttyEnabled: true,command: 'cat'), 
-		containerTemplate(name: 'docker',       image: 'docker:stable-dind', ttyEnabled: true, command: 'cat', privileged: true),
+		containerTemplate(name: 'kaniko',       image: 'lusyoe/kaniko-executor:v1.3.0', command: 'cat', ttyEnabled: true),
         containerTemplate(name: 'kubectl',      image: 'lachlanevenson/k8s-kubectl', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'helm',         image: 'lachlanevenson/k8s-helm', command: 'cat', ttyEnabled: true)
     ],
 	volumes: [
 		emptyDirVolume(mountPath: '/var/lib/docker', memory: false),
-		hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
+		hostPathVolume(hostPath: '/var/run/crio/crio.sock', mountPath: '/var/run/crio/crio.sock')
 	]		
 )
 {
@@ -58,6 +58,13 @@ podTemplate(
 
 
         def gitCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
+
+
+        stage('image-build') {
+            container('kaniko') {
+                 sh "/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}\${TAG}-${shortGitCommit}"
+            }
+        }
 
         stage('Building the image...') 
         {
