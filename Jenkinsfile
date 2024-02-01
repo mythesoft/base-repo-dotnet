@@ -60,9 +60,28 @@ podTemplate(
         def gitCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 
 
-        stage('image-build') {
+        stage('Building the image...') {
             container('kaniko') {
-                 sh "/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}\${TAG}-${shortGitCommit}"
+                withCredentials([usernamePassword(credentialsId: 'nexus-jenkins-id', passwordVariable: 'nexusPassword', usernameVariable: 'nexusUser')]) 
+                {
+                    sh """
+                    cat <<EOF > /kaniko/.docker/config.json
+                    {
+                        "auths": {
+                            "$BASE_REGISTRY": {
+                                "username": "$nexusUser",
+                                "password": "$nexusPassword"
+                            }
+                        },
+                        "credHelpers": {
+                            "eu.gcr.io": "gcr"
+                        }
+                    }
+                    EOF
+                    """
+                }
+                
+                sh "/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}\${TAG}-${gitCommit}"
             }
         }
 
