@@ -96,7 +96,7 @@ podTemplate(
         stage('Deploying app...') {
             container('helm') 
             {
-                def stage = "${TAG}"
+                def stage = "DEV"
                 def versionName = "${TAG}-${gitCommit}"
                 def helmReleaseName = "${SERVICE}"
                 def chartFolder = ".helm/chart"
