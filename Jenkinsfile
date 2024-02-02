@@ -106,7 +106,7 @@ podTemplate(
                 helmResourceName = sh(returnStdout: true, script:
                     "helm template ${helmReleaseName} ${helmFlags} ${chartFolder} | " +
                             // Find deployment amongst all stuff rendered by helm
-                            "awk '/${resource}/,/--/' | " +
+                            "awk '/${helmResourceType}/,/--/' | " +
                             // Find metadata and name
                             "awk '/metadata/,/  name:/' | " +
                             // grep only the "pure" name lines
