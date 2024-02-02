@@ -32,10 +32,10 @@ podTemplate(
                 env.SERVICE = props.service
                 env.RELEASE_NAME = props.service
                 env.TAG = "ENV"
-                env.BASE_REGISTRY = "repository.labs.itellyou.ca:8182"
+                env.BASE_REGISTRY = "repository.labs.itellyou.ca:8082"
                 env.DOCKER_IMAGE_NAME = props.service
                 env.TIMEOUT = "2m"
-                env.REGISTRY_URI = "repository.labs.itellyou.ca:8182"
+                env.REGISTRY_URI = "repository.labs.itellyou.ca:8082"
             }
         }
 
