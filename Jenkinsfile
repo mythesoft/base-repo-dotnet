@@ -80,8 +80,9 @@ podTemplate(
                     EOF
                     """
                 }
-                
-                sh "/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:${TAG}-${gitCommit}"
+                script {
+                    sh "/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:${TAG}-${gitCommit}"
+                }
             }
         }
 
