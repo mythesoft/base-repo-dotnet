@@ -6,7 +6,7 @@ podTemplate(
 	label: "build",
 	containers: [
         containerTemplate(name: 'dotnet',       image: 'mcr.microsoft.com/dotnet/sdk:7.0',ttyEnabled: true,command: 'cat'), 
-		containerTemplate(name: 'kaniko',       image: 'gcr.io/kaniko-project/executor:latest', command: 'cat', ttyEnabled: true),
+		containerTemplate(name: 'kaniko',       image: 'gcr.io/kaniko-project/executor:latest', command: '/busybox/cat', ttyEnabled: true),
         containerTemplate(name: 'kubectl',      image: 'lachlanevenson/k8s-kubectl', ttyEnabled: true, command: 'cat'),
         containerTemplate(name: 'helm',         image: 'lachlanevenson/k8s-helm', command: 'cat', ttyEnabled: true)
     ],
