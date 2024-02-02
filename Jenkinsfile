@@ -113,7 +113,7 @@ podTemplate(
                 {
                     sh "docker login ${REGISTRY_URI} -u ${nexusUser} -p ${nexusPassword}"
                     sh """
-                        docker push ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:\${TAG}-${gitCommit}
+                        docker push ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:${TAG}-${gitCommit}
                         docker push ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:latest
                         docker push ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:qa-${gitCommit}
                     """
