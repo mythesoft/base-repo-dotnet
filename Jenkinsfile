@@ -60,7 +60,7 @@ podTemplate(
         def gitCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 
         stage('Building the image...') {
-            container('kaniko') {
+            container(name: 'kaniko', shell: '/busybox/sh') {
                 withCredentials([usernamePassword(credentialsId: 'nexus-jenkins-id', passwordVariable: 'nexusPassword', usernameVariable: 'nexusUser')]) 
                 {
                     sh """
@@ -80,9 +80,13 @@ podTemplate(
                     mkdir /workspace
                     """
                 }
-                script {
-                    sh "/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:${TAG}-${gitCommit}"
+                
+                withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
+                    sh """#!/busybox/sh
+                    /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:${TAG}-${gitCommit}
+                    """
                 }
+                
             }
         }
 
