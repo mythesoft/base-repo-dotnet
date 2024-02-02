@@ -59,7 +59,6 @@ podTemplate(
 
         def gitCommit = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
 
-
         stage('Building the image...') {
             container('kaniko') {
                 withCredentials([usernamePassword(credentialsId: 'nexus-jenkins-id', passwordVariable: 'nexusPassword', usernameVariable: 'nexusUser')]) 
@@ -78,46 +77,11 @@ podTemplate(
                         }
                     }
                     EOF
+                    mkdir /workspace
                     """
                 }
                 script {
                     sh "/kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:${TAG}-${gitCommit}"
-                }
-            }
-        }
-
-        stage('Building the image...') 
-        {
-            container('docker')
-            {
-                sh 'docker --version'
-                sh """
-                docker build -t ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:\${TAG}-${gitCommit} .
-                docker tag ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:\${TAG}-${gitCommit} \
-                            ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:latest
-                docker tag ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:\${TAG}-${gitCommit} \
-                            ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:qa-${gitCommit}
-                """
-            }
-        }
-
-        stage('Cleaning dangling images...') {
-            container('docker') {
-                sh 'docker images --quiet --filter=dangling=true | xargs --no-run-if-empty docker rmi -f || true'
-            }
-        }
-
-        stage('Pushing to registry...') {
-            container('docker') {
-
-                withCredentials([usernamePassword(credentialsId: 'nexus-jenkins-id', passwordVariable: 'nexusPassword', usernameVariable: 'nexusUser')]) 
-                {
-                    sh "docker login ${REGISTRY_URI} -u ${nexusUser} -p ${nexusPassword}"
-                    sh """
-                        docker push ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:\${TAG}-${gitCommit}
-                        docker push ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:latest
-                        docker push ${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:qa-${gitCommit}
-                    """
                 }
             }
         }
