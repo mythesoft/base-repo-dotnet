@@ -38,7 +38,6 @@ podTemplate(
                 env.BASE_REGISTRY = props.BASE_REGISTRY
                 env.REGISTRY_URI = props.REGISTRY_URI
                 env.SRV_NAME = "${PROJECT_BASE}-${SERVICE}"
-                env.REPO_BASE_URI = "${REGISTRY_URI}/${REPO_NAME}"
             }
         }
 
