@@ -28,7 +28,7 @@ podTemplate(
         stage('Test enviroment') 
         {
             script {
-                def props = readProperties file: '.ci/dev.env' 
+                def props = readProperties file: '.ci/DEV.env' 
                 env.SERVICE = props.SERVICE
                 env.RELEASE_NAME = props.RELEASE_NAME
                 env.TAG = "ENV"
