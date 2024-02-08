@@ -28,14 +28,19 @@ podTemplate(
         stage('Test enviroment') 
         {
             script {
-                def props = readProperties file: '.ci/DEV.env' 
-                env.SERVICE = props.service
-                env.RELEASE_NAME = props.service
+                def props = readProperties file: '.ci/dev.env' 
+                env.SERVICE = props.SERVICE
+                env.RELEASE_NAME = props.RELEASE_NAME
                 env.TAG = "ENV"
-                env.BASE_REGISTRY = "repository.labs.itellyou.ca:8082"
-                env.DOCKER_IMAGE_NAME = props.service
-                env.TIMEOUT = "2m"
-                env.REGISTRY_URI = "repository.labs.itellyou.ca:8082"
+                env.BASE_REGISTRY = props.BASE_REGISTRY
+                env.DOCKER_IMAGE_NAME = "${TEAM}/${PROJECT_BASE}"
+                env.TIMEOUT = props.TIMEOUT
+                env.REGISTRY_URI = props.REGISTRY_URI
+                env.TEAM = props.TEAM
+                env.PROJECT_BASE = props.PROJECT_BASE
+                env.ROLE = props.ROLE
+                env.SRV_NAME = "${PROJECT_BASE}-${ROLE}"
+                env.REPO_BASE_URI = "${REGISTRY_URI}/${REPO_NAME}"
             }
         }
 
@@ -100,7 +105,7 @@ podTemplate(
                 def versionName = "${TAG}-${gitCommit}"
                 def helmReleaseName = "${SERVICE}"
                 def chartFolder = ".helm/chart"
-                def helmFlags = "--values=.helm/chart/values-${stage}.yaml --set image.repository=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME} --set image.tag=${versionName}"
+                def helmFlags = "--values=.helm/chart/values-${stage}.yaml --namespace ${TEAM} --set image.repository=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME} --set image.tag=${versionName} --set ingress.enabled=true --set ingress.hosts[0].host=yourhost.com, "
 
                 sh "helm upgrade --install ${helmFlags} ${helmReleaseName} ${chartFolder}"
                 helmResourceName = sh(returnStdout: true, script:
