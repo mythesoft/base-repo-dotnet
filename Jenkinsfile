@@ -25,7 +25,7 @@ podTemplate(
 
         
 
-        stage('Test enviroment') 
+        stage('Load enviroment') 
         {
             script {
                 def props = readProperties file: '.ci/variables/dev.env' 
@@ -103,7 +103,7 @@ podTemplate(
                 def versionName = "${TAG}-${gitCommit}"
                 def helmReleaseName = "${SERVICE}"
                 def chartFolder = ".helm/chart"
-                def helmFlags = "--values=.helm/chart/values-${stage}.yaml --create-namespace --namespace ${PROJECT_BASE} --set image.repository=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME} --set image.tag=${versionName} --set ingress.enabled=true --set ingress.hosts[0].host=${INGRESS_HOSTNAME},ingress.tls[0].hosts[0]=${INGRESS_HOSTNAME}"
+                def helmFlags = "--values=.helm/chart/values-${stage}.yaml --create-namespace --namespace ${PROJECT_BASE} --set image.repository=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME} --set image.tag=${versionName} --set ingress.enabled=true --set ingress.class=nginx --set ingress.hosts[0].host=${INGRESS_HOSTNAME},ingress.tls[0].hosts[0]=${INGRESS_HOSTNAME}"
 
                 sh "helm upgrade --install ${helmFlags} ${helmReleaseName} ${chartFolder}"
                 helmResourceName = sh(returnStdout: true, script:
@@ -125,7 +125,7 @@ podTemplate(
 
         stage('Waiting for the app to be ready...') {
             container('kubectl') {
-                sh "kubectl rollout status ${helmResourceType} ${helmResourceName} --timeout=${TIMEOUT}"
+                sh "kubectl rollout status ${helmResourceType} ${helmResourceName} -n ${PROJECT_BASE} --timeout=${TIMEOUT}"
             }
         }
 
