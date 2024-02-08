@@ -33,13 +33,11 @@ podTemplate(
                 env.RELEASE_NAME = props.RELEASE_NAME
                 env.TAG = "ENV"
                 env.BASE_REGISTRY = props.BASE_REGISTRY
-                env.DOCKER_IMAGE_NAME = "${TEAM}/${PROJECT_BASE}"
+                env.DOCKER_IMAGE_NAME = "${PROJECT_BASE}/${SERVICE}"
                 env.TIMEOUT = props.TIMEOUT
                 env.REGISTRY_URI = props.REGISTRY_URI
-                env.TEAM = props.TEAM
                 env.PROJECT_BASE = props.PROJECT_BASE
-                env.ROLE = props.ROLE
-                env.SRV_NAME = "${PROJECT_BASE}-${ROLE}"
+                env.SRV_NAME = "${PROJECT_BASE}-${SERVICE}"
                 env.REPO_BASE_URI = "${REGISTRY_URI}/${REPO_NAME}"
             }
         }
