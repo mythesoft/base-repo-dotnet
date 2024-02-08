@@ -103,7 +103,7 @@ podTemplate(
                 def versionName = "${TAG}-${gitCommit}"
                 def helmReleaseName = "${SERVICE}"
                 def chartFolder = ".helm/chart"
-                def helmFlags = "--values=.helm/chart/values-${stage}.yaml --namespace ${PROJECT_BASE} --set image.repository=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME} --set image.tag=${versionName} --set ingress.enabled=true --set ingress.hosts[0].host=${INGRESS_HOSTNAME},ingress.tls[0].hosts[0]=${INGRESS_HOSTNAME}"
+                def helmFlags = "--values=.helm/chart/values-${stage}.yaml --create-namespace --namespace ${PROJECT_BASE} --set image.repository=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME} --set image.tag=${versionName} --set ingress.enabled=true --set ingress.hosts[0].host=${INGRESS_HOSTNAME},ingress.tls[0].hosts[0]=${INGRESS_HOSTNAME}"
 
                 sh "helm upgrade --install ${helmFlags} ${helmReleaseName} ${chartFolder}"
                 helmResourceName = sh(returnStdout: true, script:
