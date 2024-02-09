@@ -21,17 +21,17 @@ podTemplate(
         stage('checkout') 
         {
             checkout scm
-        }
 
-        
+            //DEFINE ENVIROMENT BASED ON BRANCH
+            ENVIRONMENT_SLUG=prd
+        } 
 
         stage('Load enviroment') 
         {
             script {
-                def props = readProperties file: '.ci/variables/dev.env' 
+                def props = readProperties file: ".ci/variables/${ENVIRONMENT_SLUG}.env"
                 env.SERVICE = props.SERVICE
                 env.RELEASE_NAME = props.RELEASE_NAME
-                env.TAG = "ENV"
                 env.TIMEOUT = props.TIMEOUT
                 env.PROJECT_BASE = props.PROJECT_BASE
                 env.DOCKER_IMAGE_NAME = "${PROJECT_BASE}/${SERVICE}"
@@ -86,7 +86,7 @@ podTemplate(
                 
                 withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
                     sh """#!/busybox/sh
-                    /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:${TAG}-${gitCommit}
+                    /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --insecure --skip-tls-verify --cache=true --destination=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME}:${gitCommit}
                     """
                 }
                 
@@ -100,7 +100,7 @@ podTemplate(
             container('helm') 
             {
                 def stage = "DEV"
-                def versionName = "${TAG}-${gitCommit}"
+                def versionName = "${gitCommit}"
                 def helmReleaseName = "${SERVICE}"
                 def chartFolder = ".helm/chart"
                 def helmFlags = "--values=.helm/chart/values-${stage}.yaml --create-namespace --namespace ${PROJECT_BASE} --set image.repository=${BASE_REGISTRY}/${DOCKER_IMAGE_NAME} --set image.tag=${versionName} --set ingress.enabled=true --set ingress.class=nginx --set ingress.hosts[0].host=${INGRESS_HOSTNAME},ingress.tls[0].hosts[0]=${INGRESS_HOSTNAME}"
