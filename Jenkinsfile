@@ -23,7 +23,7 @@ podTemplate(
             checkout scm
 
             //DEFINE ENVIROMENT BASED ON BRANCH
-            ENVIRONMENT_SLUG=prd
+            ENVIRONMENT_SLUG="prd"
         } 
 
         stage('Load enviroment') 
