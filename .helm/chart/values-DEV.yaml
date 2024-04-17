@@ -43,8 +43,8 @@ podAnnotations:
           exec "$@"
           {{- end }}
   #vault.hashicorp.com/auth-path: auth/<K8s cluster for auth>
-  #vault.hashicorp.com/role: app
-  
+  vault.hashicorp.com/role: register-leads-prd
+
 podLabels: {}
 
 podSecurityContext: {}
