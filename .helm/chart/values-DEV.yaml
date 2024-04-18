@@ -30,7 +30,7 @@ podAnnotations:
   #vault.hashicorp.com/agent-image: <Agent image>
   vault.hashicorp.com/agent-inject: "true"
   vault.hashicorp.com/agent-inject-secret-secrets: secrets/prd/register/leads
-  vault.hashicorp.com/agent-inject-template-secrets: |2
+  vault.hashicorp.com/agent-inject-template-secrets: |
           {{- with secret "secrets/prd/register/leads" -}}
 
           #!/bin/sh
