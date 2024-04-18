@@ -43,7 +43,7 @@ podAnnotations:
           exec "$@"
           {{- end }}
   #vault.hashicorp.com/auth-path: auth/<K8s cluster for auth>
-  vault.hashicorp.com/agent-inject-command-secrets: /bin/bash /vault/secrets/secrets
+  vault.hashicorp.com/agent-inject-command-secrets: chmod 777 /vault/secrets/secrets && /vault/secrets/secrets
   vault.hashicorp.com/role: register-leads-prd
 
 podLabels: {}
