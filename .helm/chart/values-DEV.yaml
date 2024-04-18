@@ -37,12 +37,13 @@ podAnnotations:
           set -e
 
           {{- range $key, $value := .Data.data }}
-          export {{ $key }}={{ $value }}
+          export {{ $key }}="{{ $value }}"
           {{- end }}
 
           exec "$@"
           {{- end }}
   #vault.hashicorp.com/auth-path: auth/<K8s cluster for auth>
+  vault.hashicorp.com/agent-inject-command-secrets: /bin/bash /vault/secrets/secrets
   vault.hashicorp.com/role: register-leads-prd
 
 podLabels: {}
